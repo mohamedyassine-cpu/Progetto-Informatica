@@ -35,6 +35,11 @@ typedef struct {
     int tempo;
 } Record;
 
+typedef struct NodoRecord {
+    Record record;
+    struct NodoRecord *prossimo;
+} NodoRecord;
+
 // Funzioni di gestione del gioco
 void aggiorna_logica(StatoGioco *statoCorrente, Giocatore *giocatore);
 void menuPrincipale(StatoGioco *statoCorrente, Giocatore *giocatore);

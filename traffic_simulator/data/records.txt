@@ -77,3 +77,5 @@ michele,18.75,70
 q,1.55,5
 prodbyasso,3.27,11
 prodbyasso,42.83,107
+prodbyasso,1.55,5
+prodbyasso,8.62,37

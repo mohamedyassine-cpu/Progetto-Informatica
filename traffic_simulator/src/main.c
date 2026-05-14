@@ -21,9 +21,7 @@ int main() {
                 mostraGameOver(&statoCorrente, &giocatore);
                 break;
             case RECORD: {
-                Record records[100];
-                int num_records = 0;
-                leggi_record(records, &num_records);
+                NodoRecord *testa = leggi_record();
 
                 #ifdef _WIN32
                     system("cls");
@@ -32,17 +30,23 @@ int main() {
                 #endif
 
                 printf("=== RECORD SALVATI ===\n\n");
-                if (num_records == 0) {
+                if (testa == NULL) {
                     printf("Nessun record salvato.\n");
                 } else {
-                    for (int i = 0; i < num_records; i++) {
+                    int posizione = 1;
+                    NodoRecord *corrente = testa;
+                    while (corrente != NULL) {
                         printf("%d. %s - %.2f km - %d sec\n",
-                               i + 1,
-                               records[i].nome,
-                               records[i].km,
-                               records[i].tempo);
+                               posizione,
+                               corrente->record.nome,
+                               corrente->record.km,
+                               corrente->record.tempo);
+                        corrente = corrente->prossimo;
+                        posizione++;
                     }
                 }
+
+                libera_lista_record(testa);
 
                 printf("\nPremi INVIO per tornare al menu...\n");
                 int c;

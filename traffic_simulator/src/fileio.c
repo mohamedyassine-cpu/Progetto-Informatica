@@ -7,8 +7,6 @@
 #include <string.h>
 #include <time.h>
 
-static const int MAX_RECORDS_FILE = 100;
-
 void salva_record(const Record *record) {
     FILE *file = fopen("data/records.txt", "a");
     if (file == NULL) {
@@ -19,23 +17,57 @@ void salva_record(const Record *record) {
     fclose(file);
 }
 
-void leggi_record(Record *records, int *num_records) {
-    FILE *file = fopen("data/records.txt", "r");
-    if (file == NULL) {
-        *num_records = 0;
-        return;
+// Funzione helper per inserire un record nella lista in ordine decrescente di km
+NodoRecord* inserisci_ordinato(NodoRecord *testa, Record nuovo_record) {
+    NodoRecord *nuovo_nodo = (NodoRecord*)malloc(sizeof(NodoRecord));
+    if (nuovo_nodo == NULL) {
+        return testa; // In caso di errore, restituisci la testa invariata
+    }
+    nuovo_nodo->record = nuovo_record;
+    nuovo_nodo->prossimo = NULL;
+
+    if (testa == NULL || nuovo_record.km > testa->record.km) {
+        nuovo_nodo->prossimo = testa;
+        return nuovo_nodo;
     }
 
+    NodoRecord *corrente = testa;
+    while (corrente->prossimo != NULL && corrente->prossimo->record.km >= nuovo_record.km) {
+        corrente = corrente->prossimo;
+    }
+
+    nuovo_nodo->prossimo = corrente->prossimo;
+    corrente->prossimo = nuovo_nodo;
+    return testa;
+}
+
+NodoRecord* leggi_record() {
+    FILE *file = fopen("data/records.txt", "r");
+    if (file == NULL) {
+        return NULL;
+    }
+
+    NodoRecord *testa = NULL;
     char line[128];
-    int count = 0;
-    while (count < MAX_RECORDS_FILE && fgets(line, sizeof(line), file) != NULL) {
-        if (sscanf(line, "%19[^,],%lf,%d", records[count].nome, &records[count].km, &records[count].tempo) == 3) {
-            count++;
+    Record temp_record;
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        if (sscanf(line, "%19[^,],%lf,%d", temp_record.nome, &temp_record.km, &temp_record.tempo) == 3) {
+            testa = inserisci_ordinato(testa, temp_record);
         }
     }
 
     fclose(file);
-    *num_records = count;
+    return testa;
+}
+
+void libera_lista_record(NodoRecord *testa) {
+    NodoRecord *corrente = testa;
+    while (corrente != NULL) {
+        NodoRecord *temp = corrente;
+        corrente = corrente->prossimo;
+        free(temp);
+    }
 }
 
 int leggi_record_personale(const char *nome) {
