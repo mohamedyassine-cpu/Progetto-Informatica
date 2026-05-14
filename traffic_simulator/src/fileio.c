@@ -7,13 +7,18 @@
 #include <string.h>
 #include <time.h>
 
+// Funzione che salva un record nel file dei record
 void salva_record(const Record *record) {
+    // Apre il file records.txt in modalità append (aggiunge alla fine)
     FILE *file = fopen("data/records.txt", "a");
+    // Se non riesce ad aprire il file, esce dalla funzione
     if (file == NULL) {
         return;
     }
 
+    // Scrive nel file il nome, i km e il tempo separati da virgola
     fprintf(file, "%s,%.2f,%d\n", record->nome, record->km, record->tempo);
+    // Chiude il file
     fclose(file);
 }
 

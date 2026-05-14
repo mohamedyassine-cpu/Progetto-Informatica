@@ -44,22 +44,28 @@ void genera_ostacolo() {
 }
 
 // Aggiorna la posizione di tutti gli ostacoli attivi.
+// Funzione che aggiorna la posizione degli ostacoli nel gioco
 void aggiorna_ostacoli(float moltiplicatore_velocita __attribute__((unused))) {
-    // Aumenta il contatore per la generazione.
-    // La frequenza di generazione dipende da `contatore_generazione`.
+    // Aumenta il contatore per decidere quando generare nuovi ostacoli
     contatore_generazione++;
+    // Se il contatore supera 20, genera un nuovo ostacolo
     if (contatore_generazione > 20) { // Genera un ostacolo ogni 20 cicli
+        // Chiama la funzione per creare un nuovo ostacolo
         genera_ostacolo();
+        // Resetta il contatore
         contatore_generazione = 0;
     }
 
-    // Logica di 'caduta' degli ostacoli: si muovono di 1 riga per ciclo
+    // Ciclo per muovere tutti gli ostacoli attivi
     for (int i = 0; i < MAX_OSTACOLI; ++i) {
+        // Controlla se l'ostacolo è attivo (riga >= 0)
         if (ostacoli[i].riga >= 0) { // Se l'ostacolo è attivo
+            // Muove l'ostacolo di una riga verso il basso
             ostacoli[i].riga += 1; // Muove di una riga ad ogni ciclo
 
-            // Se un ostacolo supera l'altezza dello schermo, viene disattivato.
+            // Se l'ostacolo supera l'altezza dello schermo, lo disattiva
             if (ostacoli[i].riga >= ALTEZZA_SCHERMO) {
+                // Imposta la riga a -1 per renderlo inattivo
                 ostacoli[i].riga = -1; // Lo rendiamo di nuovo inattivo
             }
         }
